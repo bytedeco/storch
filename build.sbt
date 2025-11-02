@@ -130,7 +130,7 @@ excludeDependencies ++= Seq(
 )
 
 lazy val storch_core = project
-  .in(file("storch_core"))
+  .in(file("core"))
   .settings(commonSettings)
   .settings(
     javaCppPresetLibs ++= Seq(
