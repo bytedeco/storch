@@ -198,7 +198,7 @@ lazy val storch_core = project
   )
 
 lazy val storch_vision = project
-  .in(file("storch_vision"))
+  .in(file("vision"))
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
@@ -217,7 +217,7 @@ lazy val storch_vision = project
   .dependsOn(storch_core)
 
 lazy val storch_examples = project
-  .in(file("storch_examples"))
+  .in(file("examples"))
   .enablePlugins(NoPublishPlugin)
   .settings(
     commonSettings,
