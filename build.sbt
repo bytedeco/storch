@@ -27,12 +27,13 @@ ThisBuild / tlSitePublishBranch := Some("main")
 ThisBuild / apiURL := Some(new URL("https://storch.dev/api/"))
 
 val scrImageVersion = "4.3.0"
-val pytorchVersion = "2.7.1" // "2.5.1"
-val cudaVersion =  "12.9-9.10" //"12.6-9.5"
-val openblasVersion ="0.3.30" //"0.3.28"
-val mklVersion = "2025.2"
-ThisBuild / scalaVersion := "3.6.3"
-ThisBuild / javaCppVersion := "1.5.12"  //"1.5.11"
+val pytorchVersion = "2.10.0" //"2.7.1" // "2.5.1"
+val cudaVersion = "13.1-9.19" // "12.9-9.10" //"12.6-9.5"
+val openblasVersion = "0.3.31" //"0.3.30" //"0.3.28" //// Source: https://mvnrepository.com/artifact/org.bytedeco/openblas
+//libraryDependencies += "org.bytedeco" % "openblas" % "0.3.31-1.5.13"
+val mklVersion = "2025.3"
+ThisBuild / scalaVersion := "3.8.1"
+ThisBuild / javaCppVersion := "1.5.13"  //"1.5.11"
 ThisBuild / resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("11"))
@@ -100,10 +101,30 @@ releaseProcess := Seq[ReleaseStep](
   commitNextVersion,
   pushChanges
 )
+
+//libraryDependencies ++= Seq(
+//  // Source: https://mvnrepository.com/artifact/org.bytedeco/pytorch
+//  "org.bytedeco" % "pytorch" % "2.10.0-1.5.13",
+//  "org.bytedeco" % "pytorch-platform" % "2.10.0-1.5.13",
+//  "org.bytedeco" % "pytorch-platform-gpu" % "2.10.0-1.5.13",
+//  // Source: https://mvnrepository.com/artifact/org.bytedeco/cuda
+//  "org.bytedeco" % "cuda" % "13.1-9.19-1.5.13",
+//  // Source: https://mvnrepository.com/artifact/org.bytedeco/cuda-platform
+//  "org.bytedeco" % "cuda-platform" % "13.1-9.19-1.5.13",
+//
+//  //  "org.bytedeco" % "cuda-platform-redist-cudnn" % "13.1-9.17-1.5.13",
+//  //  "org.bytedeco" % "cuda-platform-redist-cusolver" % "13.1-9.17-1.5.13",
+//  //  "org.bytedeco" % "cuda-platform-redist-nccl" % "13.1-9.17-1.5.13",
+//  "junit" % "junit" % "4.13.2" % Test
+//  // 注释掉的 MKL 依赖
+//  // "org.bytedeco" % "mkl-platform-redist" % "2025.2-1.5.13-SNAPSHOT"
+//)
 //libraryDependencies += "io.github.mullerhai" % "storch-scikit-learn_3" % "0.1.2-1.15.2" % Test exclude("org.scala-lang.modules","scala-collection-compat_2.13") exclude("org.typelevel","algebra_2.13")exclude("org.typelevel","cats-kernel_2.13")
 // https://mvnrepository.com/artifact/org.bytedeco/cuda
 //libraryDependencies += "org.bytedeco" % "pytorch-platform-gpu" % "2.7.1-1.5.12"
-libraryDependencies += "org.bytedeco" % "cuda" % "12.9-9.10-1.5.12"
+
+libraryDependencies += "org.bytedeco" % "cuda" % "13.1-9.19-1.5.13" // "12.9-9.10-1.5.12" //??
+
 libraryDependencies += "org.apache.commons" % "commons-pool2" % "2.12.1"
 // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
 libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.20.0"
@@ -133,18 +154,20 @@ lazy val storch_core = project
   .in(file("storch_core"))
   .settings(commonSettings)
   .settings(
+
     javaCppPresetLibs ++= Seq(
       (if (enableGPU.value) "pytorch-gpu" else "pytorch") -> pytorchVersion,
       "openblas" -> openblasVersion
-    ) ++ (if (hasMKL) Seq("mkl" -> mklVersion) else Seq()),
+    ) ++ (if (hasMKL) Seq("mkl" -> mklVersion) else Seq()), //??
+
 //    ++(if (enableGPU.value) Seq("cuda-redist" -> cudaVersion) else Seq()),
     javaCppPlatform := org.bytedeco.sbt.javacpp.Platform.current,
     fork := true,
     Test / fork := true,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "pytorch" % s"$pytorchVersion-${javaCppVersion.value}",
+//      "org.bytedeco" % "pytorch" % s"$pytorchVersion-${javaCppVersion.value}", //??
 //      "org.bytedeco" % "pytorch-platform-gpu" % s"$pytorchVersion-${javaCppVersion.value}",
-      "org.bytedeco" % "cuda" % "12.9-9.10-1.5.12",
+      "org.bytedeco" % "cuda" % "13.1-9.19-1.5.13", // "12.9-9.10-1.5.12", //??
 //      "org.bytedeco" % "cuda-platform" % "12.9-9.10-1.5.12",
       "org.typelevel" %% "spire" % "0.18.0",
       "org.typelevel" %% "shapeless3-typeable" % "3.3.0",
