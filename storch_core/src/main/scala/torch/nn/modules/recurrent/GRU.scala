@@ -1,0 +1,171 @@
+/*
+ * Copyright 2022 storch.dev
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package torch
+package nn
+package modules
+package recurrent
+
+import org.bytedeco.javacpp.{LongPointer}
+import org.bytedeco.pytorch
+import org.bytedeco.pytorch.{PackedSequence, GRUImpl, GRUOptions}
+import torch.internal.NativeConverters.{fromNative, toNative}
+
+/** Applies a 2D convolution over an input signal composed of several input planes. long input_size,
+  * \@Cast("int64_t") long hidden_size T_TensorTensor_T, T_TensorTensor_TOptional,
+  * T_TensorT_TensorTensor_T_T,
+  *
+  * @group nn_conv
+  */
+object GRU:
+  def apply[ParamType <: FloatNN | ComplexNN: Default](
+      input_size: Int,
+      hidden_size: Int,
+      num_layers: Int = 1,
+      bias: Boolean = true,
+      batch_first: Boolean = false,
+      dropout: Float | Double = 0f,
+      bidirectional: Boolean = false
+  ): GRU[ParamType] =
+    new GRU(input_size, hidden_size, num_layers, bias, batch_first, dropout, bidirectional)
+
+final class GRU[ParamType <: FloatNN | ComplexNN: Default](
+    val input_size: Int,
+    val hidden_size: Int,
+    val num_layers: Int = 1,
+    val bias: Boolean = true,
+    val batch_first: Boolean = false,
+    val dropout: Float | Double = 0f,
+    val bidirectional: Boolean = false
+) extends HasParams[ParamType]
+    with TensorModule[ParamType]:
+  type PackedSequenceTensor = (PackedSequence, Tensor[ParamType]) // T_PackedSequenceTensor_T
+  System.setProperty("org.bytedeco.javacpp.nopointergc", "true")
+  private val options = new GRUOptions(input_size.toLong, hidden_size.toLong)
+  override def toString =
+    s"${getClass.getSimpleName}(inputSize=$input_size, hiddenSize=$hidden_size,numLayers=${num_layers},batchFirst = ${batch_first},dropout = ${dropout},bidirectional = ${bidirectional} bias=$bias)"
+
+  options.input_size().put(LongPointer(1).put(input_size.toLong))
+  options.hidden_size().put(LongPointer(1).put(hidden_size.toLong))
+  options.num_layers().put(LongPointer(1).put(num_layers.toLong))
+  options.bias().put(bias)
+  options.batch_first().put(batch_first)
+  dropout match {
+    case p: Float  => options.dropout().put(p.toDouble)
+    case p: Double => options.dropout().put(p)
+  }
+  options.bidirectional().put(bidirectional)
+
+  override private[torch] val nativeModule: GRUImpl = GRUImpl(options)
+  nativeModule.to(paramType.toScalarType, false)
+
+  def apply(
+      input: Tensor[ParamType],
+      hx: Tensor[ParamType]
+  ): Tuple2[Tensor[ParamType], Tensor[ParamType]] = {
+    val fore = nativeModule.forward(input.native, hx.native)
+    (fromNative(fore.get0()), fromNative(fore.get1()))
+  }
+
+  def apply(
+      input: Tensor[ParamType],
+      hx: Option[Tensor[ParamType]] = None
+  ): Tuple2[Tensor[ParamType], Tensor[ParamType]] = {
+    val fore =
+      if hx.isDefined then nativeModule.forward(input.native, hx.get.native)
+      else nativeModule.forward(input.native)
+    (fromNative(fore.get0()), fromNative(fore.get1()))
+  }
+
+  def apply(packed_input: PackedSequence): PackedSequenceTensor = {
+    val output = nativeModule.forward_with_packed_input(packed_input)
+    (output.get0(), fromNative(output.get1()))
+
+  }
+
+  def apply(packed_input: PackedSequence, hx: Tensor[ParamType]): PackedSequenceTensor = {
+    val output = nativeModule.forward_with_packed_input(packed_input, hx.native)
+    (output.get0(), fromNative(output.get1()))
+
+  }
+  def forward_with_packed_input(packed_input: PackedSequence): PackedSequenceTensor = {
+    val output = nativeModule.forward_with_packed_input(packed_input)
+    (output.get0(), fromNative(output.get1()))
+
+  }
+
+  def forward_with_packed_input(
+      packed_input: PackedSequence,
+      hx: Tensor[ParamType]
+  ): PackedSequenceTensor = {
+    val output = nativeModule.forward_with_packed_input(packed_input, hx.native)
+    (output.get0(), fromNative(output.get1()))
+
+  }
+
+  def forward(
+      input: Tensor[ParamType],
+      hx: Tensor[ParamType]
+  ): Tuple2[Tensor[ParamType], Tensor[ParamType]] = {
+    val fore = nativeModule.forward(input.native, hx.native)
+    (fromNative(fore.get0()), fromNative(fore.get1()))
+  }
+
+  def forward(
+      input: Tensor[ParamType],
+      hx: Option[Tensor[ParamType]] = None
+  ): Tuple2[Tensor[ParamType], Tensor[ParamType]] = {
+    val fore =
+      if hx.isDefined then nativeModule.forward(input.native, hx.get.native)
+      else nativeModule.forward(input.native)
+    (fromNative(fore.get0()), fromNative(fore.get1()))
+  }
+
+  def forward(packed_input: PackedSequence): PackedSequenceTensor = {
+    val output = nativeModule.forward_with_packed_input(packed_input)
+    (output.get0(), fromNative(output.get1()))
+
+  }
+
+  def forward(packed_input: PackedSequence, hx: Tensor[ParamType]): PackedSequenceTensor = {
+    val output = nativeModule.forward_with_packed_input(packed_input, hx.native)
+    (output.get0(), fromNative(output.get1()))
+
+  }
+  def all_weights(): Seq[Tensor[ParamType]] = {
+    val vec = nativeModule.all_weights()
+    torch.tensorVectorToSeqTensor(vec)
+  }
+
+  def weights = all_weights()
+
+  override def hasBias(): Boolean = options.bias().get()
+
+  def reset(): Unit = nativeModule.reset()
+
+  def reset_parameters(): Unit = nativeModule.reset_parameters()
+
+  override def apply(v1: Tensor[ParamType]): Tensor[ParamType] = ???
+
+//  def apply(
+//             input: Tensor[ParamType]
+//           ): Tuple2[Tensor[ParamType], Tensor[ParamType]] = {
+//    val fore = nativeModule.forward(input.native)
+//    (fromNative(fore.get0()), fromNative(fore.get1()))
+//  }
+
+//  def weight: TensorVector = fromNative(nativeModule.all_weights())
+//  options.hidden_size().put(hiddenSize)

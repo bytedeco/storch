@@ -96,7 +96,7 @@ object V2:
   val n_embed = 384
   val n_head = 6
   val n_layer = 6
-  val dropout = 0.2
+  val dropout = 0.2f
 
   // Initialize weights
   val init_mean = 0.0 // 0,0
@@ -151,7 +151,7 @@ object V2:
    */
 
   // here are all the unique characters that occur in this text
-  val chars = SortedSet(text: _*)
+  val chars = SortedSet(text*)
   println(s"chars = ${chars.mkString(", ")}")
   val vocab_size = chars.size
   println(s"vocab_size = $vocab_size")
@@ -288,12 +288,12 @@ object V2:
       n_embed: Int,
       head_size: Int,
       block_size: Int,
-      dropout: Double
+      dropout: Float
   ) extends torch.nn.modules.TensorModule[D]: // extends nn.Module:
 
-    val key = register(nn.Linear[D](n_embed, head_size, addBias = false))
-    val query = register(nn.Linear[D](n_embed, head_size, addBias = false))
-    val value = register(nn.Linear[D](n_embed, head_size, addBias = false))
+    val key = register(nn.Linear[D](n_embed, head_size, add_bias = false))
+    val query = register(nn.Linear[D](n_embed, head_size, add_bias = false))
+    val value = register(nn.Linear[D](n_embed, head_size, add_bias = false))
     val ones = torch.ones[D](Seq(block_size, block_size), dtype = key.paramType)
     val tril = registerBuffer(torch.tril(ones), "tril")
     val drop = register(nn.Dropout(dropout))
@@ -337,9 +337,9 @@ object V2:
       // drop: Double
   ) extends torch.nn.modules.TensorModule[D]: // extends nn.Module:
 
-    val key = register(nn.Linear[D](nEmbed, headSize, addBias = false))
-    val query = register(nn.Linear[D](nEmbed, headSize, addBias = false))
-    val value = register(nn.Linear[D](nEmbed, headSize, addBias = false))
+    val key = register(nn.Linear[D](nEmbed, headSize, add_bias = false))
+    val query = register(nn.Linear[D](nEmbed, headSize, add_bias = false))
+    val value = register(nn.Linear[D](nEmbed, headSize, add_bias = false))
     val ones = torch.ones[D](Seq(blockSize, blockSize), dtype = key.paramType)
     val tril = registerBuffer(torch.tril(ones), "tril")
     val drop = register(nn.Dropout(dropout))
@@ -404,7 +404,7 @@ object V2:
       nEmbed: Int,
       headSize: Int,
       blockSize: Int,
-      dropout: Double
+      dropout: Float
   ) extends torch.nn.modules.TensorModule[D]: // extends nn.Module:
 
     // Cannot register with the same name
@@ -413,7 +413,7 @@ object V2:
       Utils.register_i(this, Head_2(nEmbed, headSize, blockSize), i)
     }
     // val hs = 0 until numHeads map{ i => Utils.register_i(this, Head(nEmbed, headSize, blockSize, dropout), i) }
-    val heads = register(nn.ModuleList(hs: _*))
+    val heads = register(nn.ModuleList(hs*))
     // TODO: BUG - self.proj = nn.Linear(head_size * num_heads, n_embd)
     val proj = register(nn.Linear(headSize * numHeads, nEmbed))
     // val proj = register( nn.Linear(nEmbed, nEmbed) )
@@ -497,7 +497,7 @@ object V2:
       // TODO check if we need this
       @nowarn("msg=unused explicit parameter")
       vocabSize: Int,
-      dropout: Double
+      dropout: Float
   ) extends torch.nn.modules.TensorModule[D]:
 
     // n_embd: embedding dimension, n_head: the number of heads we'd like
@@ -596,14 +596,14 @@ object V2:
       nEmbed: Int,
       nBlocks: Int,
       nHead: Int,
-      dropout: Double
+      dropout: Float
   ) extends BigramLanguageModel:
 
     // each token directly reads off the logits for the next token from a lookup table
     val token_embedding_table = register(nn.Embedding(vocabSize, nEmbed))
     val position_embedding_table = register(nn.Embedding(blockSize, nEmbed))
     val blocks_i = 0 until nBlocks map { i => Block(nEmbed, nHead, blockSize, vocabSize, dropout) }
-    val blocks = register(nn.Sequential(blocks_i: _*))
+    val blocks = register(nn.Sequential(blocks_i*))
     val ln_f = register(nn.LayerNorm(Seq(nEmbed)))
     val lm_head = register(nn.Linear(nEmbed, vocabSize))
 
@@ -636,10 +636,10 @@ object V2:
 
       // idx and targets are both (B,T) tensor of integers
       // idx is (B,T)
-      val token_embed = token_embedding_table(idx) // (B,T,C) where C is nEmbed
+      val token_embed = token_embedding_table(idx.to(torch.float32)) // (B,T,C) where C is nEmbed
       // positions of tokens
       val pos = torch.arange(0L, t, device = device) // (T) were T is the block size?
-      val pos_embed = position_embedding_table(pos) // (T,C)
+      val pos_embed = position_embedding_table(pos.to(torch.float32)) // (T,C)
       // Add the position embeddings
       val x0 = token_embed + pos_embed // (B,T,C)
       val x1 = blocks(x0) // apply blocks of self-attention (B,T,C) - C = nEmbed

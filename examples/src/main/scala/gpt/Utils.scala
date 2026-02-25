@@ -213,7 +213,7 @@ object Utils:
       // get the device
       val cudaAllocator = torch_cuda.getAllocator()
       println(cudaAllocator.initialized())
-      val stats = cudaAllocator.getDeviceStats(device)
+      val stats = cudaAllocator.getDeviceStats(device.toByte)
 
       // Collect the statistics
       val result = scala.collection.mutable.Map[String, Long]()

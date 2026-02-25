@@ -78,10 +78,9 @@ object LeNetApp extends App {
       (torch.stack(features).to(device), torch.stack(targets).to(device))
     }
 
-  val lossFn = torch.nn.loss.CrossEntropyLoss()
+  val lossFn =  nn.CrossEntropyLoss()
   // enable AMSGrad to avoid convergence issues
   val optimizer = Adam(model.parameters, lr = 1e-3, amsgrad = true)
-
   // run training
   for (epoch <- 1 to 5) do
     for (batch <- dataLoader.zipWithIndex) do
