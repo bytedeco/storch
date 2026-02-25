@@ -38,7 +38,9 @@ abstract class TorchReducer {
       find_unused_parameters: Boolean,
       gradient_as_bucket_view: Boolean,
       param_names: SizeTStringMap,
-      first_bucket_bytes_cap: Long
+      first_bucket_bytes_cap: Long,
+      skip_all_reduce_unused_params: Boolean,
+      use_python_reducer: Boolean
   ): Reducer = {
     val paramsNative = new TensorVector(params.map(_.native)*)
     val buckets = new SizeTVectorVector(bucket_indices.map(el => new SizeTVector(el))*)
@@ -52,7 +54,9 @@ abstract class TorchReducer {
       find_unused_parameters,
       gradient_as_bucket_view,
       param_names,
-      first_bucket_bytes_cap
+      first_bucket_bytes_cap,
+      skip_all_reduce_unused_params,
+      use_python_reducer
     )
   }
 

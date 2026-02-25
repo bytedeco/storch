@@ -67,21 +67,21 @@ class TensorSuite extends TensorCheckSuite {
   test("indexing") {
     val tensor = torch.arange(0, 16).reshape(4, 4)
     // first row
-    assertEquals(tensor(0), Tensor(Seq(0, 1, 2, 3)))
+    assertEquals(tensor(0).to(DType.int32), Tensor(Seq(0, 1, 2, 3)).to(DType.int32))
     // first column
-    assertEquals(tensor(torch.Slice(), 0), Tensor(Seq(0, 4, 8, 12)))
+    assertEquals(tensor(torch.Slice(), 0).to(DType.int32), Tensor(Seq(0, 4, 8, 12)).to(DType.int32))
     // last column
-    assertEquals(tensor(---, -1), Tensor(Seq(3, 7, 11, 15)))
+    assertEquals(tensor(---, -1).to(DType.int32), Tensor(Seq(3, 7, 11, 15)).to(DType.int32))
   }
 
   test("update/setter") {
     val tensor = torch.arange(0, 16).reshape(4, 4)
     tensor(Seq(0)) = 20
-    assertEquals(tensor(0), torch.full(Seq(4), 20))
+    assertEquals(tensor(0).to(DType.int32), torch.full(Seq(4), 20).to(DType.int32))
 
     val updated = Tensor(30)
     tensor(Seq(1, 0)) = Tensor(30)
-    assertEquals(tensor(1, 0), updated)
+    assertEquals(tensor(1, 0).to(DType.int32), updated.to(DType.int32))
 
     // copy column 1 to column 0
     tensor(Seq(torch.Slice(), 1)) = tensor(torch.Slice(), 0)

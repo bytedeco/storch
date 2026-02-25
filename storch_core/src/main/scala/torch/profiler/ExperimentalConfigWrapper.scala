@@ -1,35 +1,40 @@
 package torch.profiler
 
-import org.bytedeco.pytorch.{ExperimentalConfig}
-
-import org.bytedeco.javacpp.Pointer
+import org.bytedeco.pytorch.ExperimentalConfig
+import org.bytedeco.javacpp.{BytePointer, Pointer}
 import org.bytedeco.pytorch.StringVector
 
 class ExperimentalConfigWrapper private (private val underlying: ExperimentalConfig) {
 
   def this(
-      profilerMetrics: StringVector = new StringVector(),
-      profilerMeasurePerKernel: Boolean = false,
+            profiler_metrics: StringVector = new StringVector(),
+      profiler_measure_per_kernel: Boolean = false,
       verbose: Boolean = false,
-      performanceEvents: StringVector = new StringVector(),
-      enableCudaSyncEvents: Boolean = false,
-      adjustProfilerStep: Boolean = false,
-      disableExternalCorrelation: Boolean = false,
-      profileAllThreads: Boolean = false,
-      captureOverloadNames: Boolean = false,
-      adjustTimestamps: Boolean = false
+      performance_events: StringVector = new StringVector(),
+      enable_cuda_sync_events: Boolean = false,
+      adjust_profiler_step: Boolean = false,
+      disable_external_correlation: Boolean = false,
+      profile_all_threads: Boolean = false,
+      capture_overload_names: Boolean = false,
+      record_python_gc_info: Boolean = false,
+      expose_kineto_event_metadata: Boolean = false,
+      custom_profiler_config: String = "",
+      adjust_timestamps: Boolean = false
   ) = this(
     new ExperimentalConfig(
-      profilerMetrics,
-      profilerMeasurePerKernel,
+      profiler_metrics,
+      profiler_measure_per_kernel,
       verbose,
-      performanceEvents,
-      enableCudaSyncEvents,
-      adjustProfilerStep,
-      disableExternalCorrelation,
-      profileAllThreads,
-      captureOverloadNames,
-      adjustTimestamps
+      performance_events,
+      enable_cuda_sync_events,
+      adjust_profiler_step,
+      disable_external_correlation,
+      profile_all_threads,
+      capture_overload_names,
+      record_python_gc_info,
+      expose_kineto_event_metadata,
+      new BytePointer(custom_profiler_config),
+      adjust_timestamps
     )
   )
 

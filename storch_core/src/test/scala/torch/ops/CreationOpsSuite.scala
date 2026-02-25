@@ -23,7 +23,7 @@ class CreationOpsSuite extends TensorCheckSuite {
 
   test("arange.unit-test") {
     val t0 = arange(0, 10)
-    assertEquals(t0.toSeq, Seq.range(0, 10))
+    assertEquals(t0.toSeq.asInstanceOf[Seq[Int]], Seq.range(0, 10))
     val t1 = arange(0, 10, 2)
     assertEquals(t1.toSeq, Seq.range(0, 10, 2))
   }

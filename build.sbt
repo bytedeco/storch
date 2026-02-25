@@ -56,7 +56,7 @@ lazy val commonSettings = Seq(
   // This is a hack to avoid depending on the native libs when publishing
   // but conveniently have them on the classpath during development.
   // There's probably a cleaner way to do this.
-  tlJdkRelease := Some(11)
+  tlJdkRelease := Some(21)
 ) ++ tlReplaceCommandAlias(
   "tlReleaseLocal",
   List(

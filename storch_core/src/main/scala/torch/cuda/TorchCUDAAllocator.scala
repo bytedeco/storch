@@ -115,10 +115,11 @@ class TorchCUDAAllocator(val nativeAllocator: CUDAAllocator) extends Closeable {
     * @param device
     *   设备索引
     */
-  def ensureExistsAndIncrefPool(
+  def  createOrIncrefPool(
+    
       device: Byte,
       mempool_id: DeviceAssertionsDataVectorCUDAKernelLaunchInfoVectorPair
-  ): Unit = nativeAllocator.ensureExistsAndIncrefPool(device, mempool_id)
+  ): Unit = nativeAllocator.createOrIncrefPool(device, mempool_id)
 
   def checkPoolLiveAllocations(
       device: Byte,
@@ -132,19 +133,35 @@ class TorchCUDAAllocator(val nativeAllocator: CUDAAllocator) extends Closeable {
 
   def isHistoryEnabled = nativeAllocator.isHistoryEnabled
 
+  //  public native @Cast("bool") boolean isHistoryEnabled();
+  //  public native void recordHistory(
+  //        @Cast("bool") boolean enabled,
+  //        @ByVal @Cast("c10::cuda::CUDACachingAllocator::CreateContextFn*") Pointer context_recorder,
+  //        @Cast("size_t") long alloc_trace_max_entries,
+  //        RecordContext when,
+  //        @Cast("bool") boolean clearHistory);
+  //  public native void recordHistory(
+  //        @Cast("bool") boolean enabled,
+  //        @ByVal @Cast("c10::cuda::CUDACachingAllocator::CreateContextFn*") Pointer context_recorder,
+  //        @Cast("size_t") long alloc_trace_max_entries,
+  //        @Cast("c10::cuda::CUDACachingAllocator::RecordContext") int when,
+  //        @Cast("bool") boolean clearHistory);
+  
   def recordHistory(
       enabled: Boolean,
       context_recorder: Pointer,
       alloc_trace_max_entries: Long,
-      when: torch_cuda.RecordContext
-  ) = nativeAllocator.recordHistory(enabled, context_recorder, alloc_trace_max_entries, when)
+      when: torch_cuda.RecordContext,
+      clearHistory: Boolean
+  ) = nativeAllocator.recordHistory(enabled, context_recorder, alloc_trace_max_entries, when,clearHistory)
 
   def recordHistory(
       enabled: Boolean,
       context_recorder: Pointer,
       alloc_trace_max_entries: Long,
-      when: Int
-  ) = nativeAllocator.recordHistory(enabled, context_recorder, alloc_trace_max_entries, when)
+      when: Int,
+      clearHistory: Boolean
+  ) = nativeAllocator.recordHistory(enabled, context_recorder, alloc_trace_max_entries, when,clearHistory)
 
   def recordAnnotation(md: StringPair) = nativeAllocator.recordAnnotation(md)
 

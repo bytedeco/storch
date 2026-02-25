@@ -17,47 +17,11 @@
 package torch
 
 import torch.numpy.matrix.NDArray
-import org.bytedeco.javacpp.{
-  Pointer,
-  BoolPointer,
-  BytePointer,
-  DoublePointer,
-  FloatPointer,
-  IntPointer,
-  LongPointer,
-  ShortPointer
-}
+import org.bytedeco.javacpp.{BoolPointer, BytePointer, DoublePointer, FloatPointer, IntPointer, LongPointer, Pointer, ShortPointer}
 import org.bytedeco.pytorch
-import org.bytedeco.pytorch.{
-  Tensor as NativeTensor,
-  BoolOptional,
-  TensorOptions,
-  TensorBase,
-  DoubleOptional,
-  EllipsisIndexType,
-  Generator,
-  GeneratorOptional,
-  LongOptional,
-  NamedTensorMeta,
-  Node,
-  Quantizer,
-  ScalarOptional,
-  ScalarTypeOptional,
-  Storage,
-  SymInt,
-  SymIntOptional,
-  TensorArrayRefOptional,
-  TensorIndex,
-  TensorIndexArrayRef,
-  TensorIndexVector,
-  TensorOptional,
-  TensorOptionalList,
-  TensorTensorHook,
-  TensorVector,
-  VoidTensorHook
-}
+import org.bytedeco.pytorch.{BoolOptional, DoubleOptional, EllipsisIndexType, Generator, GeneratorOptional, LongOptional, NamedTensorMeta, Node, Quantizer, ScalarOptional, ScalarTypeOptional, Storage, SymInt, SymIntOptional, TensorArrayRefOptional, TensorBase, TensorIndex, TensorIndexArrayRef, TensorIndexVector, TensorOptional, TensorOptionalList, TensorOptions, TensorTensorHook, TensorVector, VoidTensorHook, Tensor as NativeTensor}
 import org.bytedeco.pytorch.global.torch as torchNative
-import org.bytedeco.pytorch.global.torch.ScalarType
+import org.bytedeco.pytorch.global.torch.{ScalarType,Backend}
 
 import java.nio.{Buffer, ByteBuffer, DoubleBuffer, FloatBuffer, IntBuffer, LongBuffer, ShortBuffer}
 import scala.collection.immutable.ArraySeq
@@ -1897,7 +1861,7 @@ sealed abstract class Tensor[D <: DType]( /* private[torch]  */ val native: pyto
 
   def put[D2 <: DType](x: Tensor[D2]): Tensor[Promoted[D, D2]] = fromNative(native.put(x.native))
 
-  def toBackend(b: Int): Tensor[D] = fromNative(native.toBackend(b))
+  def toBackend(b: Backend): Tensor[D] = fromNative(native.toBackend(b))
 
   def not(un_used: Int*): Tensor[D] = fromNative(native.not())
 

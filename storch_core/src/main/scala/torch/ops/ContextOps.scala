@@ -105,8 +105,8 @@ private[torch] trait ContextOps {
 
   def supportedQEngines = Context.supportedQEngines()
 
-  def alertCuBLASConfigNotDeterministic(using context: Context = torchNative.globalContext()) =
-    context.alertCuBLASConfigNotDeterministic()
+//  def alertCuBLASConfigNotDeterministic(using context: Context = torchNative.globalContext()) =
+//    context.alertCuBLASConfigNotDeterministic()
 
   def setFloat32MatmulPrecision(precision: String)(using
       context: Context = torchNative.globalContext()

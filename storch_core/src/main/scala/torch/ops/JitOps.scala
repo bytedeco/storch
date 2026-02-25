@@ -221,8 +221,8 @@ trait JitOps {
       torchNative.optimize_for_inference(scriptModule, strVector)
     }
 
-    def getWriteableTensorData(tensor: PytorchTensor, bool: Boolean): WriteableTensorData =
-      torchNative.getWriteableTensorData(tensor, bool)
+//    def getWriteableTensorData(tensor: PytorchTensor, bool: Boolean): WriteableTensorData =
+//      torchNative.getWriteableTensorData(tensor, bool)
 
     def findOperatorFor(operatorName: String, overloadName: String): Operator = {
       val opname = new BytePointer(operatorName)
@@ -492,8 +492,8 @@ trait JitOps {
     torchNative.optimize_for_inference(scriptModule, strVector)
   }
 
-  def getWriteableTensorData(tensor: PytorchTensor, bool: Boolean): WriteableTensorData =
-    torchNative.getWriteableTensorData(tensor, bool)
+//  def getWriteableTensorData(tensor: PytorchTensor, bool: Boolean): WriteableTensorData =
+//    torchNative.getWriteableTensorData(tensor, bool)
 
   def findOperatorFor(operatorName: String, overloadName: String): Operator = {
     val opname = new BytePointer(operatorName)

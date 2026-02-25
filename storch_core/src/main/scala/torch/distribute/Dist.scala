@@ -14,8 +14,8 @@ import org.bytedeco.pytorch.{
   BarrierOptions,
   BroadcastOptions,
   DeviceOptional,
-  DistributedBackend,
-  DistributedBackendOptional,
+  Backend, // Backend,
+  BackendOptional, //BackendOptional,
   GatherOptions,
   LongVector,
   ProcessGroup,
@@ -29,7 +29,7 @@ import org.bytedeco.pytorch.{
   WorkInfoConsumer,
   gloo
 }
-import org.bytedeco.pytorch.global.torch.Backend
+import org.bytedeco.pytorch.global.torch.Backend as BackendType
 
 class ProcessGroupGlooSTorch[D <: DType](po: String) extends ProcessGroupGloo(new BytePointer(po)) {
 
@@ -398,23 +398,23 @@ class ProcessGroupSTorch[D <: DType](po: String) extends ProcessGroup(new BytePo
   override def setBackend(
       deviceType: torch.DeviceType,
       backendType: ProcessGroup.BackendType,
-      backend: DistributedBackendOptional
+      backend: BackendOptional
   ): Unit = super.setBackend(deviceType, backendType, backend)
 
   override def setBackend(
       deviceType: Byte,
       backendType: Byte,
-      backend: DistributedBackendOptional
+      backend: BackendOptional
   ): Unit = super.setBackend(deviceType, backendType, backend)
 
-  override def getDefaultBackend: DistributedBackend = super.getDefaultBackend
+  override def getDefaultBackend: Backend = super.getDefaultBackend
 
-  override def getBackend(deviceType: torch.DeviceType): DistributedBackend =
+  override def getBackend(deviceType: torch.DeviceType): Backend =
     super.getBackend(deviceType)
 
-  override def getBackend(deviceType: Byte): DistributedBackend = super.getBackend(deviceType)
+  override def getBackend(deviceType: Byte): Backend = super.getBackend(deviceType)
 
-  override def getBackend(backendType: ProcessGroup.BackendType): DistributedBackend =
+  override def getBackend(backendType: ProcessGroup.BackendType): Backend =
     super.getBackend(backendType)
 
   override def getDeviceTypes: pytorch.Device = super.getDeviceTypes
@@ -488,10 +488,10 @@ enum ReduceOpType:
 //  case UNUSED extends RedOpType.UNUSED //(9.toByte)
 
 //https://pytorch.ac.cn/docs/stable/distributed.html#torch.distributed.TCPStore
-class DistBackend[D <: DType](po: String) extends DistributedBackend(new BytePointer(po)) {
+class DistBackend[D <: DType](po: String) extends Backend(new BytePointer(po)) {
 
 //  val native :Backend
-  val native: DistributedBackend = new DistributedBackend(new BytePointer(po))
+  val native: Backend = new Backend(new BytePointer(po))
 
   override def getRank: Int = native.getRank
 
@@ -1042,16 +1042,16 @@ class DistBackend[D <: DType](po: String) extends DistributedBackend(new BytePoi
 
   override def getGroupUid: BytePointer = super.getGroupUid
 
-  override def setGroupDesc(desc: BytePointer): Unit = super.setGroupDesc(desc)
+//  override def setGroupDesc(desc: BytePointer): Unit = super.setGroupDesc(desc)
 
-  override def setGroupDesc(desc: String): Unit = super.setGroupDesc(desc)
+//  override def setGroupDesc(desc: String): Unit = super.setGroupDesc(desc)
 
-  override def getGroupDesc: BytePointer = super.getGroupDesc
+//  override def getGroupDesc: BytePointer = super.getGroupDesc
 
-  override def getBoundDeviceId: DeviceOptional = super.getBoundDeviceId
+//  override def getBoundDeviceId: DeviceOptional = super.getBoundDeviceId
 
-  override def eagerConnectSingleDevice(device: pytorch.Device): Unit =
-    super.eagerConnectSingleDevice(device)
+//  override def eagerConnectSingleDevice(device: pytorch.Device): Unit =
+//    super.eagerConnectSingleDevice(device)
 
-  override def setBoundDeviceId(device: DeviceOptional): Unit = super.setBoundDeviceId(device)
+//  override def setBoundDeviceId(device: DeviceOptional): Unit = super.setBoundDeviceId(device)
 }

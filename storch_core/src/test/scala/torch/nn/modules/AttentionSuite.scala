@@ -50,7 +50,7 @@ class TransformerEncoderLayerSuite extends munit.FunSuite {
     //    assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) //lack of  paramter
     val layer = nn.TransformerEncoderLayer(
       d_model = 512,
-      n_head = 8,
+      nhead = 8,
       dim_feedforward = 2048,
       dropout = 0.1f,
       activation = "relu"
@@ -66,7 +66,7 @@ class TransformerEncoderLayerSuite2 extends munit.FunSuite {
   test("TransformerEncoderLayer output shapes") {
     val input = torch.randn(Seq(32, 10, 512))
     //    assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) //lack of  paramter
-    val layer = nn.TransformerEncoderLayer(d_model = 512, n_head = 8, batch_first = true)
+    val layer = nn.TransformerEncoderLayer(d_model = 512, nhead = 8, batch_first = true)
     //    val encoder = nn.TransformerEncoder(encoder_layer = layer, num_layers = 6)
     val out = layer(input)
     println(s"out .shape ${out.shape}")
@@ -78,7 +78,7 @@ class TransformerEncoderLayerSuite2 extends munit.FunSuite {
 class TransformerDecoderLayerSuite extends munit.FunSuite {
   test("TransformerDecoderLayerSuite output shapes") {
 
-    val layer = nn.TransformerDecoderLayer(d_model = 512, n_head = 8)
+    val layer = nn.TransformerDecoderLayer(d_model = 512, nhead = 8)
     //    val decoder = nn.TransformerDecoder(decoder_layer = layer, num_layers = 6)
     val memory = torch.randn(Seq(10, 32, 512))
     val tgt = torch.randn(Seq(20, 32, 512))
@@ -92,7 +92,7 @@ class TransformerDecoderLayerSuite extends munit.FunSuite {
 class TransformerDecoderLayerSuite2 extends munit.FunSuite {
   test("TransformerDecoderLayerSuite2 output shapes") {
 
-    val layer = nn.TransformerDecoderLayer(d_model = 512, n_head = 8, batch_first = true)
+    val layer = nn.TransformerDecoderLayer(d_model = 512, nhead = 8, batch_first = true)
     //    val decoder = nn.TransformerDecoder(decoder_layer = layer, num_layers = 6)
     val memory = torch.randn(Seq(32, 10, 512))
     val tgt = torch.randn(Seq(32, 20, 512))
@@ -105,7 +105,7 @@ class TransformerEncoderSuite extends munit.FunSuite {
   test("TransformerEncoderLayer output shapes") {
     val input = torch.randn(Seq(10, 32, 512))
     //    assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) //lack of  paramter
-    val layer = nn.TransformerEncoderLayer(d_model = 512, n_head = 8)
+    val layer = nn.TransformerEncoderLayer(d_model = 512, nhead = 8)
     val encoder = nn.TransformerEncoder(encoder_layer = layer, num_layers = 6)
     val out = encoder(input)
     println(s"out .shape ${out.shape}")
@@ -117,7 +117,7 @@ class TransformerEncoderSuite extends munit.FunSuite {
 class TransformerDecoderSuite extends munit.FunSuite {
   test("TransformerDecoderSuite output shapes") {
 
-    val layer = nn.TransformerDecoderLayer(d_model = 512, n_head = 8)
+    val layer = nn.TransformerDecoderLayer(d_model = 512, nhead = 8)
     val decoder = nn.TransformerDecoder(decoder_layer = layer, num_layers = 6)
     val memory = torch.randn(Seq(10, 32, 512))
     val tgt = torch.randn(Seq(20, 32, 512))
@@ -222,12 +222,12 @@ class transformerEnCoderLayerRawSuite extends munit.FunSuite {
 // java:suite://Tests
 class transformerCoderSuite extends munit.FunSuite {
   test("transformerCoderSuite output shapes") {
-    val m1 = nn.TransformerEncoderLayer(d_model = 8, n_head = 4)
+    val m1 = nn.TransformerEncoderLayer(d_model = 8, nhead = 4)
     val m12 = nn.TransformerEncoder(encoder_layer = m1, num_layers = 4)
     val input = torch.randn(Seq(1, 64, 8, 9))
     val output = m12(input)
     assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) // lack of  paramter
-    val m2 = nn.TransformerDecoderLayer(d_model = 8, n_head = 4)
+    val m2 = nn.TransformerDecoderLayer(d_model = 8, nhead = 4)
     val m22 = nn.TransformerDecoder(decoder_layer = m2, num_layers = 4)
     assertEquals(m22(output).shape, Seq(1, 64, 1, 1))
   }
@@ -276,7 +276,7 @@ class TransformerEncoderLayerOldSuite extends munit.FunSuite {
   test("TransformerEncoderLayer output shapes") {
     val input = torch.randn(Seq(10, 32, 512))
     //    assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) //lack of  paramter
-    val layer = nn.TransformerEncoderLayer(d_model = 512, n_head = 8)
+    val layer = nn.TransformerEncoderLayer(d_model = 512, nhead = 8)
     //    val encoder = nn.TransformerEncoder(encoder_layer = layer, num_layers = 6)
     val out = layer(input)
     println(s"out .shape ${out.shape}")
@@ -288,7 +288,7 @@ class TransformerEncoderLayerOldSuite2 extends munit.FunSuite {
   test("TransformerEncoderLayer output shapes") {
     val input = torch.randn(Seq(32, 10, 512))
     //    assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) //lack of  paramter
-    val layer = nn.TransformerEncoderLayer(d_model = 512, n_head = 8, batch_first = true)
+    val layer = nn.TransformerEncoderLayer(d_model = 512, nhead = 8, batch_first = true)
     //    val encoder = nn.TransformerEncoder(encoder_layer = layer, num_layers = 6)
     val out = layer(input)
     println(s"out .shape ${out.shape}")
@@ -300,7 +300,7 @@ class TransformerEncoderLayerOldSuite2 extends munit.FunSuite {
 class TransformerDecoderLayerOldSuite extends munit.FunSuite {
   test("TransformerDecoderLayerOldSuite output shapes") {
 
-    val layer = nn.TransformerDecoderLayer(d_model = 512, n_head = 8)
+    val layer = nn.TransformerDecoderLayer(d_model = 512, nhead = 8)
     //    val decoder = nn.TransformerDecoder(decoder_layer = layer, num_layers = 6)
     val memory = torch.randn(Seq(10, 32, 512))
     val tgt = torch.randn(Seq(20, 32, 512))
@@ -314,7 +314,7 @@ class TransformerDecoderLayerOldSuite extends munit.FunSuite {
 class TransformerDecoderLayerOldSuite2 extends munit.FunSuite {
   test("TransformerDecoderLayerOldSuite2 output shapes") {
 
-    val layer = nn.TransformerDecoderLayer(d_model = 512, n_head = 8, batch_first = true)
+    val layer = nn.TransformerDecoderLayer(d_model = 512, nhead = 8, batch_first = true)
     //    val decoder = nn.TransformerDecoder(decoder_layer = layer, num_layers = 6)
     val memory = torch.randn(Seq(32, 10, 512))
     val tgt = torch.randn(Seq(32, 20, 512))
@@ -327,7 +327,7 @@ class TransformerEncoderOldSuite extends munit.FunSuite {
   test("TransformerEncoderOldSuite output shapes") {
     val input = torch.randn(Seq(10, 32, 512))
     //    assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) //lack of  paramter
-    val layer = nn.TransformerEncoderLayer(d_model = 512, n_head = 8)
+    val layer = nn.TransformerEncoderLayer(d_model = 512, nhead = 8)
     val encoder = nn.TransformerEncoder(encoder_layer = layer, num_layers = 6)
     val out = encoder(input)
     println(s"out .shape ${out.shape}")
@@ -339,7 +339,7 @@ class TransformerEncoderOldSuite extends munit.FunSuite {
 class TransformerDecoderOldSuite extends munit.FunSuite {
   test("TransformerDecoderOldSuite output shapes") {
 
-    val layer = nn.TransformerDecoderLayer(d_model = 512, n_head = 8)
+    val layer = nn.TransformerDecoderLayer(d_model = 512, nhead = 8)
     val decoder = nn.TransformerDecoder(decoder_layer = layer, num_layers = 6)
     val memory = torch.randn(Seq(10, 32, 512))
     val tgt = torch.randn(Seq(20, 32, 512))
@@ -356,11 +356,11 @@ class TransformerDecoderOldSuite extends munit.FunSuite {
 // java:suite://Tests
 class transformerCoderOldSuite extends munit.FunSuite {
   test("transformerCoderOldSuite output shapes") {
-    val m1 = nn.TransformerEncoderLayer(d_model = 8, n_head = 4)
+    val m1 = nn.TransformerEncoderLayer(d_model = 8, nhead = 4)
     val m12 = nn.TransformerEncoder(encoder_layer = m1, num_layers = 4)
     val input = torch.randn(Seq(1, 64, 8, 9))
     assertEquals(m12(input).shape, Seq(1, 64, 5, 7)) // lack of  paramter
-    val m2 = nn.TransformerDecoderLayer(d_model = 8, n_head = 4)
+    val m2 = nn.TransformerDecoderLayer(d_model = 8, nhead = 4)
     val m22 = nn.TransformerDecoder(decoder_layer = m2, num_layers = 4)
     assertEquals(m22(input).shape, Seq(1, 64, 1, 1))
   }

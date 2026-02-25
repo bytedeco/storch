@@ -104,7 +104,7 @@ class EmbeddingBagSuite extends munit.FunSuite {
     val input23 =
       torch.Tensor(Seq(1, 2, 4, 5, 4, 3, 2, 9)).to(torch.float32) // 16, 10)) //, 64, 8, 9))
     val offsets = torch.Tensor(Seq(0, 4))
-    val size = torch.empty(input23.size)
+    val size = torch.empty(input23.size*)
     val output = m123(input23.to(m123.paramType), offsets.to(torch.int64), size.to(m123.paramType))
     println(s"m12(input) ${output.shape}")
 
